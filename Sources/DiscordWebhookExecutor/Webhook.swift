@@ -41,7 +41,10 @@ public class URLSessionWebhook {
 extension URLSessionWebhook: Webhook {
     
     public func execute(content: Content) async throws {
-        let _ = try await session.data(for: usingMultipart(from: content))
+        let (_, response) = try await session.data(for: usingMultipart(from: content))
+        if !response.isSuccess {
+            throw URLError(.badServerResponse)
+        }
     }
     
     private func usingMultipart(from content: Content) throws -> URLRequest {
@@ -86,5 +89,17 @@ extension URLSessionWebhook: Webhook {
 extension String.UTF8View {
     
     fileprivate var data: Data { Data(self) }
+    
+}
+
+
+extension URLResponse {
+    
+    var isSuccess: Bool {
+        if let asHTTPURLResponse = self as? HTTPURLResponse {
+            return asHTTPURLResponse.statusCode >= 200 && asHTTPURLResponse.statusCode <= 300
+        }
+        return false
+    }
     
 }
