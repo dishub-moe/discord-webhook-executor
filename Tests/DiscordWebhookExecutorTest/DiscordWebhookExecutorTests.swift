@@ -30,7 +30,7 @@ final class DiscordWebhookExecutorTests: XCTestCase {
         )
     }
     
-    func testEmbed() async throws {
+    func testWithEmbeds() async throws {
         try await webhook.execute(
             content: Content
                 .builder(
@@ -111,7 +111,7 @@ final class DiscordWebhookExecutorTests: XCTestCase {
         )
     }
     
-    func testFiles() async throws {
+    func testWithAttachments() async throws {
         let path = Bundle.module.path(forResource: "Sample PDF Document", ofType: "pdf")!
         let file = URL(fileURLWithPath: path)
         let data = try Data(contentsOf: file)
