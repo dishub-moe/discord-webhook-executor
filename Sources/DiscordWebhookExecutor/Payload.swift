@@ -1,7 +1,7 @@
 import Foundation
 
 
-public struct Payload: Codable {
+public struct Payload: Encodable {
     
     let content: String?
     
@@ -48,7 +48,7 @@ public struct Payload: Codable {
 }
 
 
-public struct AttachmentPayload: Codable {
+public struct AttachmentPayload: Encodable {
     
     let id: UInt
     

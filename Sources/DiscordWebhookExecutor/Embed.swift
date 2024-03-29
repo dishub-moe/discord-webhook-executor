@@ -1,11 +1,11 @@
 import Foundation
 
 
-public struct Embed: Codable {
+public struct Embed: Encodable {
     
     public let title: String?
     
-    internal var type: String = "rich"
+    internal let type: String = "rich"
     
     public let description: String?
     
@@ -52,7 +52,7 @@ public struct Embed: Codable {
 }
 
 
-public struct EmbedFooter: Codable {
+public struct EmbedFooter: Encodable {
     
     public let text: String
     
@@ -74,7 +74,7 @@ public struct EmbedFooter: Codable {
 }
 
 
-public struct EmbedImage: Codable {
+public struct EmbedImage: Encodable {
     
     public let url: URL
     
@@ -85,7 +85,7 @@ public struct EmbedImage: Codable {
 }
 
 
-public struct EmbedThumbnail: Codable {
+public struct EmbedThumbnail: Encodable {
     
     public let url: URL
     
@@ -96,7 +96,7 @@ public struct EmbedThumbnail: Codable {
 }
 
 
-public struct EmbedAuthor: Codable {
+public struct EmbedAuthor: Encodable {
     
     public let name: String
     
@@ -123,7 +123,7 @@ public struct EmbedAuthor: Codable {
 }
 
 
-public struct EmbedField: Codable {
+public struct EmbedField: Encodable {
     
     public let name: String
     
