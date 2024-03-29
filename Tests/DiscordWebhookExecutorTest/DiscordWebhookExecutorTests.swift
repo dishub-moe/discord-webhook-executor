@@ -37,38 +37,24 @@ final class DiscordWebhookExecutorTests: XCTestCase {
                     embeds: [
                         Embed(
                             title: "This is an embed's title",
-                            type: .rich,
                             description: "This is an embed's description",
                             url: URL(string: "https://github.com/dishub-moe/discord-webhook-executor.git"),
                             timestamp: Date(),
                             color: 0x00ff00,
                             footer: EmbedFooter(
                                 text: "This is an embed's footer",
-                                iconURL: URL(string: "https://i.pravatar.cc/150?u=discord-webhook-executor"),
-                                proxyIconURL: nil
+                                iconURL: URL(string: "https://i.pravatar.cc/150?u=discord-webhook-executor")
                             ),
                             image: EmbedImage(
-                                url: URL(string: "https://i.pravatar.cc/150?u=discord-webhook-executor")!,
-                                proxyURL: nil,
-                                height: nil,
-                                width: nil
+                                url: URL(string: "https://i.pravatar.cc/150?u=discord-webhook-executor")!
                             ),
                             thumbnail: EmbedThumbnail(
-                                url: URL(string: "https://cataas.com/cat")!,
-                                proxyURL: nil,
-                                height: nil,
-                                width: nil
-                            ),
-                            video: nil,
-                            provider: EmbedProvider(
-                                name: "This is an embed's provider",
-                                url: URL(string: "https://github.com/dishub-moe/discord-webhook-executor.git")
+                                url: URL(string: "https://cataas.com/cat")!
                             ),
                             author: EmbedAuthor(
                                 name: "This is an embed's author",
                                 url: URL(string: "https://github.com/dishub-moe/discord-webhook-executor.git"),
-                                iconURL: URL(string: "https://i.pravatar.cc/150?u=discord-webhook-executor"),
-                                proxyIconURL: nil
+                                iconURL: URL(string: "https://i.pravatar.cc/150?u=discord-webhook-executor")
                             ),
                             fields: [
                                 EmbedField(
