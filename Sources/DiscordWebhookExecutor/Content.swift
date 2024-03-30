@@ -31,6 +31,10 @@ public struct Content {
         ContentBuilder(embeds: embeds)
     }
     
+    public static func builder(attachments: [Attachment]) -> ContentBuilder {
+        ContentBuilder(attachments: attachments)
+    }
+    
 }
 
 public class ContentBuilder {
@@ -49,6 +53,10 @@ public class ContentBuilder {
     
     internal init(embeds: [Embed]) {
         self.embeds = embeds
+    }
+    
+    internal init(attachments: [Attachment]) {
+        self.attachments = attachments
     }
     
     public func text(_ text: String) -> ContentBuilder {

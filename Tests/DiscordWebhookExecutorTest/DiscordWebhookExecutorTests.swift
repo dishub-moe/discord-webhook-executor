@@ -124,4 +124,22 @@ final class DiscordWebhookExecutorTests: XCTestCase {
         )
     }
     
+    func testOnlyAttachment() async throws {
+        let path = Bundle.module.path(forResource: "Sample PDF Document", ofType: "pdf")!
+        let file = URL(fileURLWithPath: path)
+        let data = try Data(contentsOf: file)
+        try await webhook.execute(
+            content: Content
+                .builder(attachments: [
+                    Attachment(
+                        data: data,
+                        filename: "Sample PDF Document.pdf",
+                        description: "Sample Description File",
+                        contentType: "application/pdf"
+                    )
+                ])
+                .build()
+        )
+    }
+    
 }
