@@ -89,3 +89,51 @@ public class ContentBuilder {
     }
     
 }
+
+
+extension Content {
+    
+    private static let encoder: JSONEncoder = ISO8601JSONEncoder()
+    
+    public func multipartBody(using boundary: String) throws -> Data {
+        let boundaryPrefix = "--\(boundary)\r\n".utf8.data
+        let boundarySuffix = "--\(boundary)--".utf8.data
+        let httpBody = NSMutableData()
+        httpBody.append(boundaryPrefix)
+        httpBody.append("Content-Disposition: form-data; name=\"payload_json\"\r\n".utf8.data)
+        httpBody.append("Content-Type: application/json\r\n\r\n".utf8.data)
+        httpBody.append(try Content.encoder.encode(Payload(content: self)))
+        if let attachments = self.attachments {
+            var counter = 0
+            for attachment in attachments {
+                httpBody.append("\r\n".utf8.data)
+                httpBody.append(boundaryPrefix)
+                httpBody.append("Content-Disposition: form-data; name=\"files[\(counter)]\"; filename=\"\(attachment.filename)\"\r\n".utf8.data)
+                httpBody.append("Content-Type: \(attachment.contentType)\r\n\r\n".utf8.data)
+                httpBody.append(attachment.data)
+                counter += 1
+            }
+        }
+        httpBody.append("\r\n".utf8.data)
+        httpBody.append(boundarySuffix)
+        return httpBody as Data
+    }
+    
+}
+
+
+extension String.UTF8View {
+    
+    fileprivate var data: Data { Data(self) }
+    
+}
+
+
+private class ISO8601JSONEncoder: JSONEncoder {
+    
+    override init() {
+        super.init()
+        dateEncodingStrategy = .iso8601
+    }
+    
+}
