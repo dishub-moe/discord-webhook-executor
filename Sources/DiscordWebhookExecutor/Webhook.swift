@@ -1,4 +1,6 @@
+import AsyncHTTPClient
 import Foundation
+import NIOHTTP1
 
 
 fileprivate let DISCORD_BASE_URL = "https://discord.com/api"
@@ -13,24 +15,17 @@ public protocol Webhook {
 }
 
 
-public class URLSessionWebhook {
-    
-    private let session: URLSession
-    
-    private let encoder: JSONEncoder
+public class HTTPClientDiscordWebhook {
     
     public let url: URL
     
-    public init(id: String, token: String, using session: URLSession = URLSession.shared) {
-        self.url = URL(string: "\(DISCORD_BASE_URL)/webhooks/\(id)/\(token)")!
-        self.session = session
-        self.encoder = JSONEncoder()
-        self.encoder.dateEncodingStrategy = .iso8601
-    }
+    private let client: HTTPClient
     
-    public init(url: URL, using session: URLSession = URLSession.shared) {
+    private let encoder: JSONEncoder
+    
+    public init(_ url: URL, using client: HTTPClient) {
+        self.client = client
         self.url = url
-        self.session = session
         self.encoder = JSONEncoder()
         self.encoder.dateEncodingStrategy = .iso8601
     }
@@ -38,25 +33,27 @@ public class URLSessionWebhook {
 }
 
 
-extension URLSessionWebhook: Webhook {
+extension HTTPClientDiscordWebhook: Webhook {
     
     public func execute(content: Content) async throws {
-        let (_, response) = try await session.data(for: usingMultipart(from: content))
-        if !response.isSuccess {
-            throw URLError(.badServerResponse)
-        }
-    }
-    
-    private func usingMultipart(from content: Content) throws -> URLRequest {
         let boundary = "boundary-BungaMungil-\(UUID().uuidString)"
-        var urlRequest = URLRequest(url: url)
-        urlRequest.httpMethod = "POST"
-        urlRequest.addValue(
-            "multipart/form-data; boundary=\(boundary)",
-            forHTTPHeaderField: "Content-Type"
+        let request = try HTTPClient.Request(
+            url: url.absoluteString,
+            method: .POST,
+            headers: [
+                "Content-Type": "multipart/form-data; boundary=\(boundary)"
+            ],
+            body: .bytes(
+                try multipartBody(
+                    from: content,
+                    using: boundary
+                )
+            )
         )
-        urlRequest.httpBody = try multipartBody(from: content, using: boundary) as Data
-        return urlRequest
+        let response = try await client.execute(request: request).get()
+        if !response.status.isSuccess {
+            throw HTTPError(from: response)
+        }
     }
     
     private func multipartBody(from content: Content, using boundary: String) throws -> Data {
@@ -93,13 +90,23 @@ extension String.UTF8View {
 }
 
 
-extension URLResponse {
+extension HTTPResponseStatus {
     
     var isSuccess: Bool {
-        if let asHTTPURLResponse = self as? HTTPURLResponse {
-            return asHTTPURLResponse.statusCode >= 200 && asHTTPURLResponse.statusCode <= 300
-        }
-        return false
+        return code >= 200 && code <= 300
+    }
+    
+}
+
+
+public struct HTTPError: LocalizedError {
+    
+    let response: HTTPClient.Response
+    
+    public var errorDescription: String? { response.status.reasonPhrase }
+    
+    init(from response: HTTPClient.Response) {
+        self.response = response
     }
     
 }

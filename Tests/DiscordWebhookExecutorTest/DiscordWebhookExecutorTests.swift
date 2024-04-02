@@ -1,11 +1,13 @@
+import AsyncHTTPClient
 import XCTest
 import DiscordWebhookExecutor
 
 
 final class DiscordWebhookExecutorTests: XCTestCase {
     
-    let webhook: Webhook = URLSessionWebhook(
-        url: URL(string: ProcessInfo.processInfo.environment["DISCORD_WEBHOOK_URL"]!)!
+    let webhook: Webhook = HTTPClientDiscordWebhook(
+        URL(string: ProcessInfo.processInfo.environment["DISCORD_WEBHOOK_URL"]!)!,
+        using: HTTPClient(eventLoopGroupProvider: .singleton)
     )
     
     func testBasic() async throws {

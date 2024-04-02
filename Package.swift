@@ -14,11 +14,18 @@ let package = Package(
             name: "DiscordWebhookExecutor",
             targets: ["DiscordWebhookExecutor"]),
     ],
+    dependencies: [
+        .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.20.1")
+    ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "DiscordWebhookExecutor"),
+            name: "DiscordWebhookExecutor",
+            dependencies: [
+                .product(name: "AsyncHTTPClient", package: "async-http-client")
+            ]
+        ),
         .testTarget(
             name: "DiscordWebhookExecutorTest",
             dependencies: ["DiscordWebhookExecutor"],
