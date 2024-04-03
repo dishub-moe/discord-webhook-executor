@@ -54,7 +54,7 @@ extension HTTPClientDiscordWebhook: Webhook {
 
 extension HTTPResponseStatus {
     
-    var isSuccess: Bool {
+    public var isSuccess: Bool {
         return code >= 200 && code <= 300
     }
     
