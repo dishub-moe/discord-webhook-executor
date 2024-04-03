@@ -31,10 +31,13 @@ As an alternative, you can download the source code and directly add them to you
 
 ## Usage
 
-First, you need to create a `Webhook` instance. By default, this package contains `URLSessionWebhook` class that can be used to create a `Webhook` instance.
+First, you need to create a `Webhook` instance. By default, this package contains `HTTPClientDiscordWebhook` class that can be used to create a `Webhook` instance.
 
 ```swift
-let webhook = URLSessionWebhook(url: URL(string: "https://discord.com/api/webhooks/.../...")!)
+let webhook: Webhook = HTTPClientDiscordWebhook(
+    URL(string: "https://discord.com/api/webhooks/.../...")!,
+    using: HTTPClient(eventLoopGroupProvider: .singleton)
+)
 ```
 
 ### Composing Content
